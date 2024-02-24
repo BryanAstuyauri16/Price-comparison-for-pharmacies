@@ -1,0 +1,9 @@
+bs4
+selenium
+time
+pandas
+io
+numpy
+dash
+dash_bootstrap_components
+warnings
