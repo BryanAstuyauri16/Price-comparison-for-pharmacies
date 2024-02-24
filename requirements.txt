@@ -4,4 +4,4 @@ pandas
 numpy
 dash
 dash_bootstrap_components
-gunicorn==19.7.1
+gunicorn
