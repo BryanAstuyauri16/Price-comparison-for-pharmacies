@@ -132,6 +132,7 @@ def initial_df(No= 16):
 ###
     
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
+server= app.server
 
 #Left
 title= dbc.Row(dbc.Col(html.Div(
