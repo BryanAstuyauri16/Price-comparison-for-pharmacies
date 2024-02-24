@@ -6,10 +6,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+
 import time
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
-import io
 import numpy as np
 
 from dash import Dash, dash_table, dcc, html, callback, clientside_callback
@@ -108,7 +108,7 @@ class Pharmacy_data():
 
         df = df.reset_index(drop= True)
         return df          
-
+    
 ###
 
 def MI_data(product):
@@ -133,7 +133,6 @@ def initial_df(No= 16):
     
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
 server= app.server
-
 #Left
 title= dbc.Row(dbc.Col(html.Div(
     html.H1("Comparación de precios entre productos de Mifarma e Inkafarma", className= 'pt-2')),
@@ -215,7 +214,7 @@ table= html.Div(dbc.Col([
             },
             fill_width= True,
         ), style= {'height': '68vh'}), style= {"overflow": "scroll"}, class_name= 'border border-dark mt-1'),
-    dbc.Row(dbc.Alert(html.Small(html.Small(id='tbl_out')), id= 'tbl_out_sz', style= {'height': '12vh'})),
+    dbc.Row(dbc.Alert(html.Small(html.Small(id='tbl_out'))), style= {'height': '12vh'}),
 ], width= 12, style= {'backgroundColor':'rgb(224, 224, 224)', 'height': '80vh'}))
 
 #Right
@@ -288,7 +287,7 @@ app.layout= dbc.Container(
 )
 
 @callback(
-    Output("datatable-interactivity", "data"), Output("datatable-interactivity", "columns"), Output('tbl_out', 'children'), Output('tbl_out_sz', 'style'), Output("datatable-interactivity", "style_data_conditional"), Output("datatable-interactivity", "style_header_conditional"), Output("datatable-interactivity", "style_table"),
+    Output("datatable-interactivity", "data"), Output("datatable-interactivity", "columns"), Output('tbl_out', 'children'), Output("datatable-interactivity", "style_data_conditional"), Output("datatable-interactivity", "style_header_conditional"), Output("datatable-interactivity", "style_table"),
     Input("submit-val", "n_clicks"),
     State("input_submit", "value"),
 )
@@ -345,7 +344,7 @@ def Update_dataTable(n_clicks, product):
         style_table= {"overflowX": "auto",
                      'minWidth': '100%'}
         style= {'height': '12vh'}
-        return df.to_dict('records'), columns, Alert, style, style_data_conditional, style_header_conditional, style_table
+        return df.to_dict('records'), columns, Alert, style_data_conditional, style_header_conditional, style_table
     else:
         pass
 
@@ -366,7 +365,7 @@ def Update_product_details(active_cell):
         prm= df['Regular Price M'][row]
         pri= df['Regular Price I'][row]
 
-        pgd= df['Product Name'][row]
+        pgd= df['Product Name'][row] + " - " + (df['Size'][row])
 
         Prd_link_x= df['Prd_link_x'][row]
         Prd_link_y= df['Prd_link_y'][row]
