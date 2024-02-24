@@ -1,6 +1,5 @@
 bs4
 selenium
-time
 pandas
 io
 numpy
