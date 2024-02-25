@@ -44,7 +44,7 @@ class Pharmacy_data():
         Product = self.product
         Search_input = wd.find_element(By.XPATH, '//input[contains(@placeholder, "Busca")]')
         Search_input.send_keys(Product, Keys.RETURN)
-        time.sleep(8)
+        time.sleep(10)
         # wd.implicitly_wait(15)
         # wait = WebDriverWait(wd, timeout=10) 
         # wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'fp-product-large span.product-name.text'))) 
