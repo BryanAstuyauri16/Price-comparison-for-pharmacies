@@ -44,7 +44,7 @@ class Pharmacy_data():
         Product = self.product
         Search_input = wd.find_element(By.XPATH, '//input[contains(@placeholder, "Busca")]')
         Search_input.send_keys(Product, Keys.RETURN)
-        time.sleep(10)
+        time.sleep(5)
         # wd.implicitly_wait(15)
         # wait = WebDriverWait(wd, timeout=10) 
         # wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'fp-product-large span.product-name.text'))) 
@@ -103,7 +103,7 @@ class Pharmacy_data():
                 Prd_link= self.url + product.select('fp-product-large div fp-link a')[0].get('href')
                 Size= product.select('fp-product-large span.text-tag')[0].text
                 img_src= product.select('fp-product-large div.col-12.display-center fp-lazy-wrapper>img')[0].get('src')
-                row = pd.DataFrame(data= {'Nombre del Producto': [Product_name], 'Size': [Size], f'Actual Price {self.pharmacy[0]}': [Actual_price], f'Regular Price {self.pharmacy[0]}': [Regular_price], f'Price Dsct {self.pharmacy[0]}': [Price_dsct], 'Source': [img_src], 'Prd_link': [Prd_link]})
+                row = pd.DataFrame(data= {'Product Name': [Product_name], 'Size': [Size], f'Actual Price {self.pharmacy[0]}': [Actual_price], f'Regular Price {self.pharmacy[0]}': [Regular_price], f'Price Dsct {self.pharmacy[0]}': [Price_dsct], 'Source': [img_src], 'Prd_link': [Prd_link]})
                 df = pd.concat([df, row], axis = 0)
 
         df = df.reset_index(drop= True)
@@ -116,7 +116,7 @@ def MI_data(product):
     urlI= 'https://inkafarma.pe/'  
     data_M= Pharmacy_data(url= urlM, product= product, pharmacy= 'Mifarma').get_data()
     data_I= Pharmacy_data(url= urlI, product= product, pharmacy= 'Inkafarma').get_data()
-    df= data_M.merge(data_I, on= ['Product Name', 'Size', 'Source'], how= 'inner').reset_index().rename(columns= {'index': 'id'})
+    df= data_M.merge(data_I, on= ['Nombre del Producto', 'Size', 'Source'], how= 'inner').reset_index().rename(columns= {'index': 'id'})
     df= df.reset_index().rename(columns= {'index': 'ID'})
     df['ID']+= 1
     return df
@@ -128,7 +128,6 @@ def initial_df(No= 16):
     df = df.reset_index().rename(columns= {'index': 'ID'})
     df['ID'] += 1
     return df
-
 ###
     
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
@@ -387,4 +386,4 @@ def Update_product_details(active_cell):
         return prm, pam, pdm, pri, pai, pdi, pgd, Prd_link_x, Prd_link_y, imagen
 
 if __name__ == '__main__':
-    app.run(debug= True)
+    app.run(debug= True, jupyter_mode= 'external', port= 8053)
