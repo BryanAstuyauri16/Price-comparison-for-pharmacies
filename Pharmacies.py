@@ -44,7 +44,7 @@ class Pharmacy_data():
         Product = self.product
         Search_input = wd.find_element(By.XPATH, '//input[contains(@placeholder, "Busca")]')
         Search_input.send_keys(Product, Keys.RETURN)
-        time.sleep(5)
+        time.sleep(8)
         # wd.implicitly_wait(15)
         # wait = WebDriverWait(wd, timeout=10) 
         # wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'fp-product-large span.product-name.text'))) 
@@ -85,7 +85,7 @@ class Pharmacy_data():
                 Prd_link= self.url + product.select('fp-product-large div fp-link a')[0].get('href')
                 Size= product.select('fp-product-large span.text-tag')[0].text
                 img_src= product.select('fp-product-large div.col-12.display-center fp-lazy-wrapper>img')[0].get('src')
-                row = pd.DataFrame(data= {'Product Name': [Product_name], 'Size': [Size], f'Actual Price {self.pharmacy[0]}': [Actual_price], f'Regular Price {self.pharmacy[0]}': [Regular_price], f'Price Dsct {self.pharmacy[0]}': [Price_dsct], 'Source': [img_src], 'Prd_link': [Prd_link]})
+                row = pd.DataFrame(data= {'Nombre del Producto': [Product_name], 'Size': [Size], f'Actual Price {self.pharmacy[0]}': [Actual_price], f'Regular Price {self.pharmacy[0]}': [Regular_price], f'Price Dsct {self.pharmacy[0]}': [Price_dsct], 'Source': [img_src], 'Prd_link': [Prd_link]})
                 df = pd.concat([df, row], axis = 0)
         
         if self.pharmacy == 'Mifarma':
@@ -103,12 +103,12 @@ class Pharmacy_data():
                 Prd_link= self.url + product.select('fp-product-large div fp-link a')[0].get('href')
                 Size= product.select('fp-product-large span.text-tag')[0].text
                 img_src= product.select('fp-product-large div.col-12.display-center fp-lazy-wrapper>img')[0].get('src')
-                row = pd.DataFrame(data= {'Product Name': [Product_name], 'Size': [Size], f'Actual Price {self.pharmacy[0]}': [Actual_price], f'Regular Price {self.pharmacy[0]}': [Regular_price], f'Price Dsct {self.pharmacy[0]}': [Price_dsct], 'Source': [img_src], 'Prd_link': [Prd_link]})
+                row = pd.DataFrame(data= {'Nombre del Producto': [Product_name], 'Size': [Size], f'Actual Price {self.pharmacy[0]}': [Actual_price], f'Regular Price {self.pharmacy[0]}': [Regular_price], f'Price Dsct {self.pharmacy[0]}': [Price_dsct], 'Source': [img_src], 'Prd_link': [Prd_link]})
                 df = pd.concat([df, row], axis = 0)
 
         df = df.reset_index(drop= True)
         return df          
-    
+   
 ###
 
 def MI_data(product):
@@ -133,12 +133,14 @@ def initial_df(No= 16):
     
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
 server= app.server
-#Left
+
 title= dbc.Row(dbc.Col(html.Div(
     html.H1("Comparación de precios entre productos de Mifarma e Inkafarma", className= 'pt-2')),
     style= dict(display= 'flex', justifyContent= 'center')
     ), class_name= 'border border-dark', style= {'backgroundColor':'rgb(255, 178, 102)'},
     )
+
+#Left
 inputrow= dbc.Row(
     dbc.Col([
         html.H6("Ingrese un valor y presione submit: ", className= 'pt-2 pe-2'),
@@ -152,67 +154,7 @@ table= html.Div(dbc.Col([
     dbc.Row(html.Div(
         dash_table.DataTable(
             id='datatable-interactivity',
-            columns = [
-                {"name": i, "id": i} for i in initial_df().columns if i != 'id'
-            ],
-            data = initial_df().to_dict('records'),
-            # merge_duplicate_headers= True,
-            # editable=True,
-            filter_action="native",
-            sort_action="native",
-            sort_mode="multi",
-            column_selectable="single",
-            row_selectable="multi",
-            # row_deletable=True,
-            selected_columns=[],
-            selected_rows=[],
-            page_action="native",
-            page_current= 0,
-            page_size= 12,
-            # style_table={"overflowX": "auto",
-            #             'minWidth': '100%'},
-            #just this works
-            style_data_conditional= [
-                # {
-                #     'if': {
-                #         'column_id': 'Nombre del Producto',
-                #     },
-                #     'color': 'rgb(160, 160, 160)',
-                # },
-                {
-                    'if': {
-                        'row_index': 'odd'
-                    },
-                    'backgroundColor': 'rgb(30, 30, 30)',
-                    'color': 'white',
-                },
-                {
-                    'if': {
-                        'row_index': 'even'
-                    },
-                    'backgroundColor': 'rgb(220, 220, 220)',
-                },
-                {
-                    'if': {
-                        'column_id': 'ID'
-                    },
-                    'text-align': 'center',
-                    'width': '75px'
-                }
-            ],
-            style_header= {
-                'backgroundColor': 'rgb(30, 30, 30)',
-                'text-align': 'center',
-                'color': 'white',
-            },
-            style_cell={
-                # 'backgroundColor': 'rgb(255, 229, 204)',
-                'textOverflow': 'ellipsis',
-                'overflow': 'hidden',
-                'text-align': 'left',
-                # 'color': 'rgb(160, 160, 160)'
-            },
-            fill_width= True,
+            data= []
         ), style= {'height': '68vh'}), style= {"overflow": "scroll"}, class_name= 'border border-dark mt-1'),
     dbc.Row(dbc.Alert(html.Small(html.Small(id='tbl_out'))), style= {'height': '12vh'}),
 ], width= 12, style= {'backgroundColor':'rgb(224, 224, 224)', 'height': '80vh'}))
@@ -274,6 +216,7 @@ prdt= dbc.Row([
     ], style= {'display': 'flex', 'justifyContent': 'center', 'height': '80vh'}),
 ])
 
+
 columns= dbc.Row([
     dbc.Col([inputrow, table], width= 6, className= 'ps-5 pt-2'),
     dbc.Col([prdt], width= 6, className= 'ps-5 pt-2')
@@ -287,7 +230,7 @@ app.layout= dbc.Container(
 )
 
 @callback(
-    Output("datatable-interactivity", "data"), Output("datatable-interactivity", "columns"), Output('tbl_out', 'children'), Output("datatable-interactivity", "style_data_conditional"), Output("datatable-interactivity", "style_header_conditional"), Output("datatable-interactivity", "style_table"),
+    Output("datatable-interactivity", "data"), Output("datatable-interactivity", "columns"), Output('tbl_out', 'children'), Output("datatable-interactivity", "style_data_conditional"), Output("datatable-interactivity", "style_header_conditional"), Output("datatable-interactivity", "style_table"), Output("datatable-interactivity", "filter_action"), Output("datatable-interactivity", "sort_action"), Output("datatable-interactivity", "page_size"),
     Input("submit-val", "n_clicks"),
     State("input_submit", "value"),
 )
@@ -334,7 +277,7 @@ def Update_dataTable(n_clicks, product):
         style_header_conditional= [
             {
                 'if': {
-                    'column_id' : 'Nombre del Producto'
+                    'column_id' : ['Nombre del Producto', 'ID']
                 },
                 'backgroundColor': 'rgb(30, 30, 30)',
                 'text-align': 'center',
@@ -343,10 +286,63 @@ def Update_dataTable(n_clicks, product):
         ]
         style_table= {"overflowX": "auto",
                      'minWidth': '100%'}
-        style= {'height': '12vh'}
-        return df.to_dict('records'), columns, Alert, style_data_conditional, style_header_conditional, style_table
+        filter_action="native"
+        sort_action="native"
+        page_size= 12
+        # page_current= 0  ##default
+        # page_action= 'native' ##default
+        # style= {'height': '12vh'}
     else:
-        pass
+        df = initial_df()
+        columns = [
+                {"name": i, "id": i} for i in df.columns if i != 'id'
+            ]
+        Alert= f'Ingrese un valor y presione submit para ver los detalles de la data obtenida.'
+        style_data_conditional= [
+            {
+                'if': {
+                    'row_index': 'odd'
+                },
+                'backgroundColor': 'rgb(30, 30, 30)',
+                'color': 'white',
+                'textOverflow': 'ellipsis',
+                'overflow': 'hidden',
+                'text-align': 'left',
+            },
+            {
+                'if': {
+                    'row_index': 'even'
+                },
+                'backgroundColor': 'rgb(220, 220, 220)',
+                'textOverflow': 'ellipsis',
+                'overflow': 'hidden',
+                'text-align': 'left',
+            },
+            {
+                'if': {
+                    'column_id': 'ID'
+                },
+                'text-align': 'center',
+                'width': '75px'
+            }
+        ] #not come here!!!
+        style_header_conditional= [
+            {
+                'if': {
+                    'column_id' : ['Nombre del Producto', 'ID']
+                },
+                'backgroundColor': 'rgb(30, 30, 30)',
+                'text-align': 'center',
+                'color': 'white',
+            }
+        ]
+        style_table= {"overflowX": "auto",
+                     'minWidth': '100%'}
+        filter_action="native"
+        sort_action="native"
+        page_size= 12
+
+    return df.to_dict('records'), columns, Alert, style_data_conditional, style_header_conditional, style_table, filter_action, sort_action, page_size
 
 @callback(
     Output('PRM', 'children'), Output('PAM', 'children'), Output('PDM', 'children'), Output('PRI', 'children'), Output('PAI', 'children'), Output('PDI', 'children'), Output('PGD', 'children'), Output('I_Product_link', 'href'), Output('M_Product_link', 'href'), Output('img', 'src'),
@@ -391,4 +387,4 @@ def Update_product_details(active_cell):
         return prm, pam, pdm, pri, pai, pdi, pgd, Prd_link_x, Prd_link_y, imagen
 
 if __name__ == '__main__':
-    app.run(debug= False)
+    app.run(debug= True)
