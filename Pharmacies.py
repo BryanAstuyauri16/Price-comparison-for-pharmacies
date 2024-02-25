@@ -103,7 +103,7 @@ class Pharmacy_data():
                 Prd_link= self.url + product.select('fp-product-large div fp-link a')[0].get('href')
                 Size= product.select('fp-product-large span.text-tag')[0].text
                 img_src= product.select('fp-product-large div.col-12.display-center fp-lazy-wrapper>img')[0].get('src')
-                row = pd.DataFrame(data= {'Product Name': [Product_name], 'Size': [Size], f'Actual Price {self.pharmacy[0]}': [Actual_price], f'Regular Price {self.pharmacy[0]}': [Regular_price], f'Price Dsct {self.pharmacy[0]}': [Price_dsct], 'Source': [img_src], 'Prd_link': [Prd_link]})
+                row = pd.DataFrame(data= {'Nombre del Producto': [Product_name], 'Size': [Size], f'Actual Price {self.pharmacy[0]}': [Actual_price], f'Regular Price {self.pharmacy[0]}': [Regular_price], f'Price Dsct {self.pharmacy[0]}': [Price_dsct], 'Source': [img_src], 'Prd_link': [Prd_link]})
                 df = pd.concat([df, row], axis = 0)
 
         df = df.reset_index(drop= True)
@@ -128,6 +128,7 @@ def initial_df(No= 16):
     df = df.reset_index().rename(columns= {'index': 'ID'})
     df['ID'] += 1
     return df
+
 ###
     
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
@@ -240,7 +241,7 @@ def Update_dataTable(n_clicks, product):
         global df
         df= MI_data(product= product)
         columns = [
-            {"name": i, "id": i} for i in df.columns if (i == 'Product Name') | (i == 'ID') #this leads df
+            {"name": i, "id": i} for i in df.columns if (i == 'Nombre del Producto') | (i == 'ID') #this leads df
         ]
         fin = time.time()
         time_taken= "%.1f" % (fin- inicio)
@@ -360,7 +361,7 @@ def Update_product_details(active_cell):
         prm= df['Regular Price M'][row]
         pri= df['Regular Price I'][row]
 
-        pgd= df['Product Name'][row] + " - " + (df['Size'][row])
+        pgd= df['Nombre del Producto'][row] + " - " + (df['Size'][row])
 
         Prd_link_x= df['Prd_link_x'][row]
         Prd_link_y= df['Prd_link_y'][row]
@@ -386,4 +387,6 @@ def Update_product_details(active_cell):
         return prm, pam, pdm, pri, pai, pdi, pgd, Prd_link_x, Prd_link_y, imagen
 
 if __name__ == '__main__':
-    app.run(debug= True, jupyter_mode= 'external', port= 8053)
+    # app.run(debug= True, jupyter_mode= 'external', port= 8053)
+    app.run()
+    
